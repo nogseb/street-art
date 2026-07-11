@@ -1,8 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { MapPin, Route, Users, ChevronRight, List, Map as MapIcon } from "lucide-react";
-import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import StreetArtMap from "@/components/StreetArtMap";
-import SpotPanel from "@/components/SpotPanel";
+import FlipCard from "@/components/FlipCard";
 import SpotList from "@/components/SpotList";
 import { type Spot, spots } from "@/data/spots";
 import { useIsMobile } from "@/hooks/useMobile";
@@ -11,21 +10,31 @@ export default function Home() {
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [showList, setShowList] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
-  const [drawerOpen, setDrawerOpen] = useState(false);
   const isMobile = useIsMobile();
+
+  // iOS viewport height fix: set --vh CSS variable
+  useEffect(() => {
+    const setVh = () => {
+      const vh = window.innerHeight * 0.01;
+      document.documentElement.style.setProperty("--vh", `${vh}px`);
+    };
+    setVh();
+    window.addEventListener("resize", setVh);
+    window.addEventListener("orientationchange", setVh);
+    return () => {
+      window.removeEventListener("resize", setVh);
+      window.removeEventListener("orientationchange", setVh);
+    };
+  }, []);
 
   const handleSelectSpot = useCallback((spot: Spot) => {
     setSelectedSpot(spot);
     setShowList(false);
     setShowIntro(false);
-    if (window.innerWidth < 768) {
-      setDrawerOpen(true);
-    }
   }, []);
 
   const handleClose = useCallback(() => {
     setSelectedSpot(null);
-    setDrawerOpen(false);
     setShowIntro(true);
   }, []);
 
@@ -90,7 +99,7 @@ export default function Home() {
 
           {/* Toggle list view - larger touch target on mobile */}
           <button
-            onClick={() => { setShowList(!showList); setSelectedSpot(null); setDrawerOpen(false); setShowIntro(false); }}
+            onClick={() => { setShowList(!showList); setSelectedSpot(null); setShowIntro(false); }}
             className={`flex items-center gap-1.5 px-3 py-2 md:px-3.5 md:py-1.5 rounded-lg md:rounded-md text-xs font-medium transition-all duration-150 active:scale-[0.95] ${
               showList
                 ? "bg-[#1A1A1A] text-white"
@@ -200,29 +209,13 @@ export default function Home() {
         {/* Side panel (desktop only) */}
         {selectedSpot && !isMobile && (
           <div className="hidden md:flex md:flex-[4] max-w-[420px] border-l border-[#E8E4DF] shrink-0 bg-[#F8F6F3]">
-            <SpotPanel spot={selectedSpot} onClose={handleClose} />
+            <FlipCard spot={selectedSpot} onClose={handleClose} />
           </div>
         )}
 
-        {/* Mobile bottom sheet using Vaul Drawer */}
-        {isMobile && (
-          <Drawer
-            open={drawerOpen}
-            onOpenChange={(open) => {
-              setDrawerOpen(open);
-              if (!open) {
-                setSelectedSpot(null);
-                setShowIntro(true);
-              }
-            }}
-            direction="bottom"
-          >
-            <DrawerContent className="max-h-[72dvh] bg-[#F8F6F3] focus:outline-none">
-              {selectedSpot && (
-                <SpotPanel spot={selectedSpot} onClose={handleClose} isMobile />
-              )}
-            </DrawerContent>
-          </Drawer>
+        {/* Mobile: FlipCard as overlay */}
+        {isMobile && selectedSpot && (
+          <FlipCard spot={selectedSpot} onClose={handleClose} isMobile />
         )}
 
         {/* List view overlay */}
