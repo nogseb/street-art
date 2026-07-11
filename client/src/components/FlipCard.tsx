@@ -17,6 +17,7 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
   const [face, setFace] = useState<CardFace>("front");
   const [selectedArtistId, setSelectedArtistId] = useState<string | null>(null);
   const [carouselIndex, setCarouselIndex] = useState(0);
+  const [lightboxOpen, setLightboxOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { photos, addPhoto, deletePhoto } = usePhotoGallery(spot.id);
 
@@ -25,6 +26,7 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
     setFace("front");
     setSelectedArtistId(null);
     setCarouselIndex(0);
+    setLightboxOpen(false);
   }, [spot.id]);
 
   const color = categoryColors[spot.category];
@@ -137,19 +139,45 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
 
             {/* Content */}
            <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-6 space-y-3 scrollbar-visible" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
-              {/* Spot photo - desktop only at top */}
-              {!isMobile && spot.photos && spot.photos.length > 0 && (
-                <div className="w-full rounded-xl overflow-hidden">
-                  <img
-                    src={spot.photos[0]}
-                    alt={spot.name}
-                    className="w-full object-cover h-44"
-                  />
-                </div>
-              )}
-
-             {/* Meta info */}
+             {/* Meta info + thumbnail */}
              <div className="space-y-2">
+                {/* Thumbnail row */}
+                {spot.photos && spot.photos.length > 0 && (
+                  <div className="flex items-start gap-3 mb-2">
+                    <button
+                      onClick={() => setLightboxOpen(true)}
+                      className="shrink-0 w-[100px] h-[100px] rounded-lg overflow-hidden border-2 border-[#E8E4DF] dark:border-[#444] hover:border-[#FF3E52] dark:hover:border-[#FF3E52] transition-colors active:scale-[0.95]"
+                      aria-label="Voir la photo en grand"
+                    >
+                      <img
+                        src={spot.photos[0]}
+                        alt={spot.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </button>
+                    <div className="space-y-1.5 pt-1">
+                      <div className="flex items-center gap-2 text-sm text-[#1A1A1A] dark:text-white">
+                        <MapPin className="w-4 h-4 shrink-0" />
+                        <span>{spot.address}</span>
+                      </div>
+                      {spot.year && (
+                        <div className="flex items-center gap-2 text-sm text-[#1A1A1A] dark:text-white">
+                          <Calendar className="w-4 h-4 shrink-0" />
+                          <span>{spot.year}</span>
+                        </div>
+                      )}
+                      {spot.walkTime && (
+                        <div className="flex items-center gap-2 text-sm text-[#1A1A1A] dark:text-white">
+                          <Navigation className="w-4 h-4 shrink-0" />
+                          <span>{spot.walkTime}</span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+                {/* Meta info without thumbnail */}
+                {(!spot.photos || spot.photos.length === 0) && (
+                  <>
                 <div className="flex items-center gap-2 text-sm text-[#1A1A1A] dark:text-white">
                  <MapPin className="w-4 h-4 shrink-0" />
                  <span>{spot.address}</span>
@@ -166,6 +194,8 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                    <span>{spot.walkTime} depuis l'étape précédente</span>
                  </div>
                )}
+                  </>
+                )}
               </div>
 
               {/* Action buttons row */}
@@ -229,17 +259,6 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                       </button>
                     ))}
                   </div>
-                </div>
-              )}
-
-              {/* Spot photo - mobile: at bottom, square format */}
-              {isMobile && spot.photos && spot.photos.length > 0 && (
-                <div className="w-full aspect-square rounded-xl overflow-hidden">
-                  <img
-                    src={spot.photos[0]}
-                    alt={spot.name}
-                    className="w-full h-full object-cover"
-                  />
                 </div>
               )}
             </div>
@@ -502,7 +521,40 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
 
   // Mobile: render as a portal overlay
   if (isMobile) {
-    return createPortal(
+    return (<>
+      {/* Lightbox */}
+      {lightboxOpen && spot.photos && spot.photos.length > 0 && createPortal(
+        <div
+          className="animate-in fade-in duration-200"
+          style={{
+            position: "fixed",
+            top: 0, left: 0, right: 0, bottom: 0,
+            zIndex: 10000,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "rgba(0,0,0,0.92)",
+          }}
+          onClick={() => setLightboxOpen(false)}
+        >
+          <button
+            className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center active:scale-[0.9] transition-transform"
+            onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+            aria-label="Fermer"
+            style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+          >
+            <X className="w-5 h-5 text-white" />
+          </button>
+          <img
+            src={spot.photos[0]}
+            alt={spot.name}
+            className="max-w-[92vw] max-h-[85vh] object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>,
+        document.body
+      )}
+      {createPortal(
       <div
         style={{
           position: "fixed",
@@ -538,9 +590,43 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
         </div>
       </div>,
       document.body
-    );
+    )}
+    </>);
   }
 
   // Desktop: inline
-  return cardContent;
+  return (<>
+    {cardContent}
+    {/* Lightbox - desktop */}
+    {lightboxOpen && spot.photos && spot.photos.length > 0 && createPortal(
+      <div
+        className="animate-in fade-in duration-200"
+        style={{
+          position: "fixed",
+          top: 0, left: 0, right: 0, bottom: 0,
+          zIndex: 10000,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "rgba(0,0,0,0.92)",
+        }}
+        onClick={() => setLightboxOpen(false)}
+      >
+        <button
+          className="absolute top-4 right-4 z-10 w-10 h-10 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center hover:bg-white/20 transition-colors"
+          onClick={(e) => { e.stopPropagation(); setLightboxOpen(false); }}
+          aria-label="Fermer"
+        >
+          <X className="w-5 h-5 text-white" />
+        </button>
+        <img
+          src={spot.photos[0]}
+          alt={spot.name}
+          className="max-w-[90vw] max-h-[85vh] object-contain rounded-lg"
+          onClick={(e) => e.stopPropagation()}
+        />
+      </div>,
+      document.body
+    )}
+  </>);
 }
