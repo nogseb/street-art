@@ -136,14 +136,14 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
             </div>
 
             {/* Content */}
-           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-20 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
-              {/* Spot photo */}
-              {spot.photos && spot.photos.length > 0 && (
+           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-6 space-y-3 scrollbar-visible" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+              {/* Spot photo - desktop only at top */}
+              {!isMobile && spot.photos && spot.photos.length > 0 && (
                 <div className="w-full rounded-xl overflow-hidden">
                   <img
                     src={spot.photos[0]}
                     alt={spot.name}
-                    className={`w-full object-cover ${isMobile ? "h-36" : "h-44"}`}
+                    className="w-full object-cover h-44"
                   />
                 </div>
               )}
@@ -229,6 +229,17 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                       </button>
                     ))}
                   </div>
+                </div>
+              )}
+
+              {/* Spot photo - mobile: at bottom, square format */}
+              {isMobile && spot.photos && spot.photos.length > 0 && (
+                <div className="w-full aspect-square rounded-xl overflow-hidden">
+                  <img
+                    src={spot.photos[0]}
+                    alt={spot.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
               )}
             </div>

@@ -244,3 +244,21 @@
 .dark .category-label {
   color: var(--cat-color-light) !important;
 }
+
+/* Visible scrollbar on mobile FlipCard */
+.scrollbar-visible {
+  overflow-y: auto !important;
+}
+.scrollbar-visible::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-visible::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-visible::-webkit-scrollbar-thumb {
+  background: rgba(150, 150, 150, 0.4);
+  border-radius: 4px;
+}
+.dark .scrollbar-visible::-webkit-scrollbar-thumb {
+  background: rgba(200, 200, 200, 0.3);
+}
