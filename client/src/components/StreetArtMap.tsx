@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { spots, categoryColors, type Spot } from "@/data/spots";
@@ -12,6 +12,9 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onSelectRef = useRef(onSelectSpot);
+  const userMarkerRef = useRef<L.CircleMarker | null>(null);
+  const userAccuracyRef = useRef<L.Circle | null>(null);
+  const [locating, setLocating] = useState(false);
   onSelectRef.current = onSelectSpot;
 
   useEffect(() => {
@@ -95,6 +98,75 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
     };
   }, []);
 
+  // Geolocation handler
+  const handleGeolocate = () => {
+    if (!mapRef.current) return;
+    if (!navigator.geolocation) {
+      alert("La géolocalisation n'est pas supportée par votre navigateur.");
+      return;
+    }
+
+    setLocating(true);
+
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude, accuracy } = position.coords;
+        const map = mapRef.current;
+        if (!map) return;
+
+        // Remove previous user marker
+        if (userMarkerRef.current) {
+          map.removeLayer(userMarkerRef.current);
+        }
+        if (userAccuracyRef.current) {
+          map.removeLayer(userAccuracyRef.current);
+        }
+
+        // Add accuracy circle
+        userAccuracyRef.current = L.circle([latitude, longitude], {
+          radius: accuracy,
+          color: "#4285F4",
+          fillColor: "#4285F4",
+          fillOpacity: 0.1,
+          weight: 1,
+          opacity: 0.3,
+        }).addTo(map);
+
+        // Add user position marker (blue dot)
+        userMarkerRef.current = L.circleMarker([latitude, longitude], {
+          radius: 8,
+          color: "#ffffff",
+          weight: 3,
+          fillColor: "#4285F4",
+          fillOpacity: 1,
+        }).addTo(map);
+
+        // Pan to user position
+        map.setView([latitude, longitude], 16, { animate: true, duration: 0.6 });
+        setLocating(false);
+      },
+      (error) => {
+        setLocating(false);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            alert("Accès à la position refusé. Activez la géolocalisation dans les réglages.");
+            break;
+          case error.POSITION_UNAVAILABLE:
+            alert("Position indisponible.");
+            break;
+          case error.TIMEOUT:
+            alert("Délai dépassé pour obtenir la position.");
+            break;
+        }
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 30000,
+      }
+    );
+  };
+
   // Pan to selected spot with offset for mobile bottom sheet
   useEffect(() => {
     if (selectedSpot && mapRef.current) {
@@ -112,6 +184,31 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
   }, [selectedSpot]);
 
   return (
-    <div ref={containerRef} className="w-full h-full touch-manipulation" />
+    <div className="relative w-full h-full">
+      <div ref={containerRef} className="w-full h-full touch-manipulation" />
+      {/* Geolocation button */}
+      <button
+        onClick={handleGeolocate}
+        disabled={locating}
+        className="absolute top-4 right-4 z-[1000] w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-200 active:scale-[0.92] transition-transform hover:bg-gray-50 disabled:opacity-60"
+        aria-label="Centrer sur ma position"
+        title="Ma position"
+      >
+        {locating ? (
+          <svg className="w-5 h-5 text-[#4285F4] animate-spin" fill="none" viewBox="0 0 24 24">
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+          </svg>
+        ) : (
+          <svg className="w-5 h-5 text-[#333]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="4" />
+            <line x1="12" y1="2" x2="12" y2="6" />
+            <line x1="12" y1="18" x2="12" y2="22" />
+            <line x1="2" y1="12" x2="6" y2="12" />
+            <line x1="18" y1="12" x2="22" y2="12" />
+          </svg>
+        )}
+      </button>
+    </div>
   );
 }
