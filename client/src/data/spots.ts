@@ -49,7 +49,7 @@ export const artists: Record<string, Artist> = {
     origin: "Saint-Denis, La Réunion",
     bio: "Jean-Sébastien Clain (Kid Kreol, né en 1984) et Yannis Nanguet (Boogie, né en 1983) forment un duo d'artistes réunionnais actif depuis 2008. Diplômés de l'École supérieure d'art de La Réunion, ils vivent et travaillent à Saint-Denis. Leur pratique artistique consiste à dévoiler un monde imaginaire créole réunionnais, enraciné dans l'océan Indien et les croyances appartenant à une culture de l'invisible. Leurs oeuvres mêlent mythologie, végétal et onirique. Ils ont réalisé des fresques monumentales à La Réunion, à Maurice, à Lyon et en France métropolitaine.",
     style: "Onirique, mythologie créole, végétal, monde invisible",
-    instagram: "kidkreol_boogie",
+    instagram: "kidkreol.boogie",
   },
   stohead: {
     id: "stohead",
