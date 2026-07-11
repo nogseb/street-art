@@ -7,16 +7,16 @@ interface SpotListProps {
 
 export default function SpotList({ onSelectSpot }: SpotListProps) {
   return (
-    <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+    <div className="max-w-2xl mx-auto px-4 py-6 md:py-12 pb-20 md:pb-12">
       {/* Header */}
-      <div className="mb-8">
+      <div className="mb-6 md:mb-8">
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF3E52] mb-2">
           Centre historique · Saint-Denis
         </p>
-        <h2 className="text-3xl md:text-4xl text-[#1A1A1A] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+        <h2 className="text-2xl md:text-4xl text-[#1A1A1A] mb-2 md:mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
           7 fresques, 2 km, 1 quartier
         </h2>
-        <p className="text-sm text-[#555] leading-relaxed max-w-lg">
+        <p className="text-[13px] md:text-sm text-[#555] leading-relaxed max-w-lg">
           Un parcours à pied dans le centre historique de Saint-Denis de La Réunion,
           à la découverte des plus belles oeuvres de street art de la ville.
           De Mr Dheo à Kid Kreol & Boogie, en passant par les emblématiques Gouzous de Jace.
@@ -33,12 +33,12 @@ export default function SpotList({ onSelectSpot }: SpotListProps) {
             <button
               key={spot.id}
               onClick={() => onSelectSpot(spot)}
-              className="w-full text-left p-4 rounded-lg border border-border hover:border-foreground/20 bg-card hover:shadow-sm transition-all group"
+              className="w-full text-left p-3.5 md:p-4 rounded-xl md:rounded-lg border border-border hover:border-foreground/20 bg-card hover:shadow-sm transition-all group active:scale-[0.98]"
             >
-              <div className="flex items-start gap-4">
+              <div className="flex items-start gap-3 md:gap-4">
                 {/* Number */}
                 <div
-                  className="w-9 h-9 rounded-full flex items-center justify-center text-white font-mono font-bold text-sm shrink-0 mt-0.5"
+                  className="w-8 h-8 md:w-9 md:h-9 rounded-full flex items-center justify-center text-white font-mono font-bold text-xs md:text-sm shrink-0 mt-0.5"
                   style={{ backgroundColor: color }}
                 >
                   {spot.id}

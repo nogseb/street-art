@@ -17,9 +17,14 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
 
+    const isMobile = window.innerWidth < 768;
+    const markerSize = isMobile ? 36 : 28;
+    const fontSize = isMobile ? 14 : 12;
+    const borderWidth = isMobile ? 3 : 2.5;
+
     const map = L.map(containerRef.current, {
       center: [-20.8790, 55.4475],
-      zoom: 16,
+      zoom: isMobile ? 15 : 16,
       zoomControl: false,
       attributionControl: false,
     });
@@ -37,19 +42,19 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
     const routeCoords: L.LatLngExpression[] = spots.map((s) => [s.lat, s.lon]);
     L.polyline(routeCoords, {
       color: "#FF3E52",
-      weight: 2.5,
+      weight: isMobile ? 3 : 2.5,
       opacity: 0.6,
       dashArray: "8 6",
     }).addTo(map);
 
-    // Add clickable markers using divIcon (lives in markerPane, always clickable)
+    // Add clickable markers
     spots.forEach((spot) => {
       const color = categoryColors[spot.category];
       const icon = L.divIcon({
-        html: `<div class="spot-marker" style="background-color:${color};width:28px;height:28px;border-radius:50%;border:2.5px solid white;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,0.3);"><span style="color:white;font-weight:700;font-size:12px;font-family:'Space Mono',monospace;line-height:1;">${spot.id}</span></div>`,
+        html: `<div class="spot-marker" style="background-color:${color};width:${markerSize}px;height:${markerSize}px;border-radius:50%;border:${borderWidth}px solid white;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.35);-webkit-tap-highlight-color:transparent;"><span style="color:white;font-weight:700;font-size:${fontSize}px;font-family:'Space Mono',monospace;line-height:1;">${spot.id}</span></div>`,
         className: "custom-spot-marker",
-        iconSize: [28, 28],
-        iconAnchor: [14, 14],
+        iconSize: [markerSize, markerSize],
+        iconAnchor: [markerSize / 2, markerSize / 2],
       });
 
       const marker = L.marker([spot.lat, spot.lon], { icon }).addTo(map);
@@ -58,12 +63,14 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
         onSelectRef.current(spot);
       });
 
-      // Tooltip
-      marker.bindTooltip(spot.name, {
-        direction: "top",
-        offset: [0, -16],
-        className: "spot-tooltip",
-      });
+      // Tooltip only on desktop (hover)
+      if (!isMobile) {
+        marker.bindTooltip(spot.name, {
+          direction: "top",
+          offset: [0, -16],
+          className: "spot-tooltip",
+        });
+      }
     });
 
     mapRef.current = map;
@@ -74,14 +81,23 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
     };
   }, []);
 
-  // Pan to selected spot
+  // Pan to selected spot with offset for mobile bottom sheet
   useEffect(() => {
     if (selectedSpot && mapRef.current) {
-      mapRef.current.panTo([selectedSpot.lat, selectedSpot.lon], { animate: true, duration: 0.5 });
+      const isMobile = window.innerWidth < 768;
+      if (isMobile) {
+        // Offset upward so the marker stays visible above the bottom sheet
+        const targetPoint = mapRef.current.latLngToContainerPoint([selectedSpot.lat, selectedSpot.lon]);
+        const offsetPoint = L.point(targetPoint.x, targetPoint.y + 80);
+        const targetLatLng = mapRef.current.containerPointToLatLng(offsetPoint);
+        mapRef.current.panTo(targetLatLng, { animate: true, duration: 0.4 });
+      } else {
+        mapRef.current.panTo([selectedSpot.lat, selectedSpot.lon], { animate: true, duration: 0.5 });
+      }
     }
   }, [selectedSpot]);
 
   return (
-    <div ref={containerRef} className="w-full h-full" />
+    <div ref={containerRef} className="w-full h-full touch-manipulation" />
   );
 }
