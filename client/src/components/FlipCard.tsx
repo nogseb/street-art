@@ -136,7 +136,7 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
             </div>
 
             {/* Content */}
-           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-6 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-20 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
               {/* Spot photo */}
               {spot.photos && spot.photos.length > 0 && (
                 <div className="w-full rounded-xl overflow-hidden">
