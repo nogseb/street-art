@@ -223,7 +223,7 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
       <button
         onClick={handleGeolocate}
         disabled={locating}
-        className="absolute top-4 right-4 z-[1000] w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center border border-gray-200 active:scale-[0.92] transition-transform hover:bg-gray-50 disabled:opacity-60"
+        className="absolute top-4 right-4 z-[1000] w-10 h-10 bg-white dark:bg-[#2A2A2A] rounded-full shadow-lg flex items-center justify-center border border-gray-200 dark:border-[#444] active:scale-[0.92] transition-transform hover:bg-gray-50 dark:hover:bg-[#333] disabled:opacity-60"
         aria-label="Centrer sur ma position"
         title="Ma position"
       >
@@ -233,7 +233,7 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
         ) : (
-          <svg className="w-5 h-5 text-[#333]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg className="w-5 h-5 text-[#333] dark:text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <circle cx="12" cy="12" r="4" />
             <line x1="12" y1="2" x2="12" y2="6" />
             <line x1="12" y1="18" x2="12" y2="22" />

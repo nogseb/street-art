@@ -170,6 +170,11 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
+  .custom-photo-marker {
+    background: transparent !important;
+    border: none !important;
+  }
+
   /**
    * Custom container utility that centers content and adds responsive padding.
    *
@@ -210,4 +215,24 @@
       max-width: 1280px; /* Standard content width */
     }
   }
+}
+
+/* Dark mode map tiles */
+.dark .leaflet-tile-pane {
+  filter: brightness(0.7) contrast(1.1) saturate(0.3);
+}
+
+.dark .leaflet-control-zoom a {
+  background: #2A2A2A !important;
+  color: #fff !important;
+  border-color: #444 !important;
+}
+
+.dark .leaflet-control-attribution {
+  background: rgba(26, 26, 26, 0.8) !important;
+  color: #888 !important;
+}
+
+.dark .leaflet-control-attribution a {
+  color: #aaa !important;
 }

@@ -13,10 +13,10 @@ export default function SpotList({ onSelectSpot }: SpotListProps) {
         <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF3E52] mb-2">
           Centre historique · Saint-Denis
         </p>
-        <h2 className="text-2xl md:text-4xl text-[#1A1A1A] mb-2 md:mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+        <h2 className="text-2xl md:text-4xl text-[#1A1A1A] dark:text-white mb-2 md:mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
           7 fresques, 2 km, 1 quartier
         </h2>
-        <p className="text-[13px] md:text-sm text-[#555] leading-relaxed max-w-lg">
+        <p className="text-[13px] md:text-sm text-[#555] dark:text-[#bbb] leading-relaxed max-w-lg">
           Un parcours à pied dans le centre historique de Saint-Denis de La Réunion,
           à la découverte des plus belles oeuvres de street art de la ville.
           De Mr Dheo à Kid Kreol & Boogie, en passant par les emblématiques Gouzous de Jace.

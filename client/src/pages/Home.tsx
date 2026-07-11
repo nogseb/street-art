@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from "react";
-import { MapPin, Route, Users, ChevronRight, List, Map as MapIcon } from "lucide-react";
+import { MapPin, Route, Users, ChevronRight, List, Map as MapIcon, Sun, Moon, Clock } from "lucide-react";
 import StreetArtMap from "@/components/StreetArtMap";
 import FlipCard from "@/components/FlipCard";
 import SpotList from "@/components/SpotList";
@@ -8,6 +8,7 @@ import CustomSpotPopup from "@/components/CustomSpotPopup";
 import { type Spot, spots, artists } from "@/data/spots";
 import { useIsMobile } from "@/hooks/useMobile";
 import { useCustomSpots, type CustomSpot, type GpsResult } from "@/hooks/useCustomSpots";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Home() {
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
@@ -16,6 +17,7 @@ export default function Home() {
   const [selectedCustomSpot, setSelectedCustomSpot] = useState<CustomSpot | null>(null);
   const isMobile = useIsMobile();
   const { spots: customSpots, add: addCustomSpot, remove: removeCustomSpot } = useCustomSpots();
+  const { theme, toggleTheme, isAutoMode, manualOverride } = useTheme();
 
   // iOS viewport height fix: set --vh CSS variable
   useEffect(() => {
@@ -78,27 +80,27 @@ export default function Home() {
   }, [handleSelectSpot]);
 
   return (
-    <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#F8F6F3]">
+    <div className="h-[100dvh] flex flex-col overflow-hidden bg-[#F8F6F3] dark:bg-[#1A1A1A]">
       {/* Header - compact on mobile */}
-      <header className="shrink-0 bg-[#F8F6F3]/95 backdrop-blur-md border-b border-[#E8E4DF] px-3 md:px-6 py-2.5 md:py-3 flex items-center justify-between z-50 safe-area-top">
+      <header className="shrink-0 bg-[#F8F6F3]/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border-b border-[#E8E4DF] dark:border-[#333] px-3 md:px-6 py-2.5 md:py-3 flex items-center justify-between z-50 safe-area-top">
         <div className="flex items-center gap-2">
           {/* ST.ART brand lockup */}
          <div className="flex items-baseline gap-0 select-none">
-            <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A] dark:text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
               ST
             </span>
             <span className="text-xl md:text-[28px] font-bold text-[#FF3E52]" style={{ fontFamily: "'DM Serif Display', serif" }}>
               .
             </span>
-            <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A] dark:text-white" style={{ fontFamily: "'DM Serif Display', serif" }}>
               ART
             </span>
-            <span className="text-sm md:text-base font-medium tracking-[-0.01em] text-[#8A8A8A] ml-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
+            <span className="text-sm md:text-base font-medium tracking-[-0.01em] text-[#8A8A8A] dark:text-[#aaa] ml-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
               Saint-Denis
             </span>
           </div>
-          <div className="hidden md:block ml-3 pl-3 border-l border-[#E8E4DF]">
-            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8A8A8A]">
+          <div className="hidden md:block ml-3 pl-3 border-l border-[#E8E4DF] dark:border-[#444]">
+            <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8A8A8A] dark:text-[#888]">
               La Réunion
             </p>
           </div>
@@ -106,7 +108,7 @@ export default function Home() {
 
         <div className="flex items-center gap-2">
           {/* Stats - hidden on mobile */}
-          <div className="hidden md:flex items-center gap-4 mr-4 text-[11px] font-mono text-[#8A8A8A]">
+          <div className="hidden md:flex items-center gap-4 mr-4 text-[11px] font-mono text-[#8A8A8A] dark:text-[#888]">
             <span className="flex items-center gap-1.5">
               <MapPin className="w-3 h-3" />
               {spots.length} étapes
@@ -121,13 +123,29 @@ export default function Home() {
             </span>
           </div>
 
+          {/* Theme toggle button */}
+          <button
+            onClick={toggleTheme}
+            className="w-9 h-9 md:w-8 md:h-8 rounded-lg md:rounded-md flex items-center justify-center bg-[#EDEAE6] dark:bg-[#333] text-[#1A1A1A] dark:text-white hover:bg-[#E0DCD7] dark:hover:bg-[#444] active:scale-[0.92] transition-all duration-150"
+            aria-label={isAutoMode ? "Mode auto (basé sur l'heure)" : theme === "dark" ? "Mode sombre" : "Mode clair"}
+            title={isAutoMode ? "Auto (18h-6h)" : theme === "dark" ? "Sombre" : "Clair"}
+          >
+            {isAutoMode ? (
+              <Clock className="w-4 h-4" />
+            ) : theme === "dark" ? (
+              <Moon className="w-4 h-4" />
+            ) : (
+              <Sun className="w-4 h-4" />
+            )}
+          </button>
+
           {/* Toggle list view - larger touch target on mobile */}
           <button
             onClick={() => { setShowList(!showList); setSelectedSpot(null); setShowIntro(false); }}
             className={`flex items-center gap-1.5 px-3 py-2 md:px-3.5 md:py-1.5 rounded-lg md:rounded-md text-xs font-medium transition-all duration-150 active:scale-[0.95] ${
               showList
-                ? "bg-[#1A1A1A] text-white"
-                : "bg-[#EDEAE6] text-[#1A1A1A] hover:bg-[#E0DCD7]"
+                ? "bg-[#1A1A1A] dark:bg-white text-white dark:text-[#1A1A1A]"
+                : "bg-[#EDEAE6] dark:bg-[#333] text-[#1A1A1A] dark:text-white hover:bg-[#E0DCD7] dark:hover:bg-[#444]"
             }`}
           >
             {showList ? <MapIcon className="w-3.5 h-3.5" /> : <List className="w-3.5 h-3.5" />}
@@ -154,17 +172,17 @@ export default function Home() {
 
           {/* Editorial intro panel (desktop only) */}
           {!selectedSpot && !showList && showIntro && (
-            <div className="hidden md:block absolute top-6 left-6 max-w-[360px] z-20 animate-in fade-in slide-in-from-left-4 duration-500">
-              <div className="bg-[#F8F6F3]/95 backdrop-blur-md rounded-xl border border-[#E8E4DF] shadow-lg overflow-hidden">
+            <div className="hidden md:block absolute top-6 left-6 max-w-[360px] z-20 animate-in fade-in slide-in-from-left-4 duration-500"> 
+              <div className="bg-[#F8F6F3]/95 dark:bg-[#2A2A2A]/95 backdrop-blur-md rounded-xl border border-[#E8E4DF] dark:border-[#444] shadow-lg overflow-hidden">
                 <div className="h-1 bg-gradient-to-r from-[#FF3E52] via-[#1A237E] to-[#2D6A4F]" />
                 <div className="p-6">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF3E52] mb-3">
                     Parcours à pied · 45-60 min
                   </p>
-                  <h2 className="text-[22px] leading-[1.2] text-[#1A1A1A] mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                  <h2 className="text-[22px] leading-[1.2] text-[#1A1A1A] dark:text-white mb-3" style={{ fontFamily: "'DM Serif Display', serif" }}>
                     7 fresques, 2 km, 1 quartier qui se raconte sur ses murs
                   </h2>
-                  <p className="text-[13px] text-[#555] leading-relaxed mb-5">
+                  <p className="text-[13px] text-[#555] dark:text-[#bbb] leading-relaxed mb-5">
                     De la rue Labourdonnais au Bas de la Rivière, explorez les oeuvres de Mr Dheo, Jace, Kid Kreol & Boogie et Seth dans le centre historique de Saint-Denis.
                   </p>
                   <button
@@ -182,27 +200,27 @@ export default function Home() {
           {/* Mobile intro card - bottom of screen */}
           {!selectedSpot && !showList && showIntro && (
             <div className="md:hidden absolute bottom-0 left-0 right-0 z-[1000] animate-in slide-in-from-bottom-4 duration-400 safe-area-bottom">
-              <div className="mx-3 mb-3 bg-white backdrop-blur-md rounded-2xl border border-[#E8E4DF] shadow-xl overflow-hidden">
+              <div className="mx-3 mb-3 bg-white dark:bg-[#2A2A2A] backdrop-blur-md rounded-2xl border border-[#E8E4DF] dark:border-[#444] shadow-xl overflow-hidden">
                 <div className="h-1 bg-gradient-to-r from-[#FF3E52] via-[#1A237E] to-[#2D6A4F]" />
                 <div className="p-4">
                   <div className="flex items-center gap-3 mb-3">
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A] dark:text-[#888]">
                       <MapPin className="w-3 h-3 text-[#FF3E52]" />
                       {spots.length} étapes
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A] dark:text-[#888]">
                       <Route className="w-3 h-3 text-[#FF3E52]" />
                       ~2,5 km
                     </div>
-                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
+                    <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A] dark:text-[#888]">
                       <Users className="w-3 h-3 text-[#FF3E52]" />
                       {Object.keys(artists).length} artistes
                     </div>
                   </div>
-                  <h2 className="text-lg leading-tight text-[#1A1A1A] mb-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
+                  <h2 className="text-lg leading-tight text-[#1A1A1A] dark:text-white mb-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
                     Parcours street art de Saint-Denis
                   </h2>
-                  <p className="text-[13px] text-[#555] leading-relaxed mb-4">
+                  <p className="text-[13px] text-[#555] dark:text-[#bbb] leading-relaxed mb-4">
                     Touchez un marqueur ou démarrez le parcours guidé.
                   </p>
                   <button
@@ -220,8 +238,8 @@ export default function Home() {
           {/* Mobile: minimal hint when no intro and no spot */}
           {!selectedSpot && !showList && !showIntro && (
             <div className="md:hidden absolute bottom-0 left-0 right-0 z-[1000] safe-area-bottom">
-              <div className="mx-3 mb-3 bg-white backdrop-blur-sm rounded-xl border border-[#E8E4DF] shadow-md px-4 py-3 flex items-center justify-between">
-                <p className="text-xs text-[#555]">
+              <div className="mx-3 mb-3 bg-white dark:bg-[#2A2A2A] backdrop-blur-sm rounded-xl border border-[#E8E4DF] dark:border-[#444] shadow-md px-4 py-3 flex items-center justify-between">
+                <p className="text-xs text-[#555] dark:text-[#bbb]">
                   Touchez un marqueur pour découvrir la fresque
                 </p>
                 <button
@@ -237,7 +255,7 @@ export default function Home() {
 
         {/* Side panel (desktop only) */}
         {selectedSpot && !isMobile && (
-          <div className="hidden md:flex md:flex-[4] max-w-[420px] border-l border-[#E8E4DF] shrink-0 bg-[#F8F6F3]">
+          <div className="hidden md:flex md:flex-[4] max-w-[420px] border-l border-[#E8E4DF] dark:border-[#333] shrink-0 bg-[#F8F6F3] dark:bg-[#1A1A1A]">
             <FlipCard spot={selectedSpot} onClose={handleClose} />
           </div>
         )}
@@ -249,7 +267,7 @@ export default function Home() {
 
         {/* List view overlay */}
         {showList && (
-          <div className="absolute inset-0 bg-[#F8F6F3] z-30 overflow-y-auto animate-in fade-in duration-200 overscroll-contain">
+          <div className="absolute inset-0 bg-[#F8F6F3] dark:bg-[#1A1A1A] z-30 overflow-y-auto animate-in fade-in duration-200 overscroll-contain">
             <SpotList onSelectSpot={handleSelectSpot} />
           </div>
         )}

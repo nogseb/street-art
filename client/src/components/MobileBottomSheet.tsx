@@ -86,7 +86,7 @@ export default function MobileBottomSheet({ open, onClose, children }: MobileBot
       {/* Sheet */}
       <div
         ref={sheetRef}
-        className="absolute left-0 right-0 bottom-0 bg-[#F8F6F3] rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-300 will-change-transform"
+        className="absolute left-0 right-0 bottom-0 bg-[#F8F6F3] dark:bg-[#2A2A2A] rounded-t-2xl shadow-2xl animate-in slide-in-from-bottom duration-300 will-change-transform"
         style={{
           position: "absolute",
           bottom: 0,
@@ -103,7 +103,7 @@ export default function MobileBottomSheet({ open, onClose, children }: MobileBot
       >
         {/* Drag handle */}
         <div data-sheet-handle className="flex justify-center pt-3 pb-1 cursor-grab">
-          <div className="w-10 h-1 rounded-full bg-[#CCC]" />
+          <div className="w-10 h-1 rounded-full bg-[#CCC] dark:bg-[#555]" />
         </div>
 
         {/* Content */}

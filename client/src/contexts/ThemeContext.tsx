@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 type Theme = "light" | "dark";
+type ManualOverride = "light" | "dark" | "auto";
 
 interface ThemeContextType {
   theme: Theme;
-  toggleTheme?: () => void;
-  switchable: boolean;
+  toggleTheme: () => void;
   isAutoMode: boolean;
+  manualOverride: ManualOverride;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -14,7 +15,6 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 interface ThemeProviderProps {
   children: React.ReactNode;
   defaultTheme?: Theme;
-  switchable?: boolean;
   autoByTime?: boolean;
 }
 
@@ -33,33 +33,45 @@ function shouldBeDark(): boolean {
 export function ThemeProvider({
   children,
   defaultTheme = "light",
-  switchable = false,
   autoByTime = false,
 }: ThemeProviderProps) {
+  // Manual override: "auto" means follow time-based logic
+  const [manualOverride, setManualOverride] = useState<ManualOverride>(() => {
+    const stored = localStorage.getItem("theme-override");
+    if (stored === "light" || stored === "dark") return stored;
+    return "auto";
+  });
+
   const [theme, setTheme] = useState<Theme>(() => {
-    if (switchable) {
-      const stored = localStorage.getItem("theme");
-      return (stored as Theme) || defaultTheme;
-    }
-    if (autoByTime) {
-      return shouldBeDark() ? "dark" : "light";
-    }
+    if (manualOverride !== "auto") return manualOverride;
+    if (autoByTime) return shouldBeDark() ? "dark" : "light";
     return defaultTheme;
   });
 
-  // Auto-update theme based on time
+  // Auto-update theme based on time (only when in auto mode)
   useEffect(() => {
-    if (!autoByTime) return;
-    
+    if (!autoByTime || manualOverride !== "auto") return;
+
     const checkTime = () => {
       const newTheme = shouldBeDark() ? "dark" : "light";
       setTheme(newTheme);
     };
-    
+
+    // Apply immediately
+    checkTime();
+
     // Check every 5 minutes
     const interval = setInterval(checkTime, 5 * 60 * 1000);
     return () => clearInterval(interval);
-  }, [autoByTime]);
+  }, [autoByTime, manualOverride]);
+
+  // Apply manual override when it changes
+  useEffect(() => {
+    if (manualOverride !== "auto") {
+      setTheme(manualOverride);
+    }
+    localStorage.setItem("theme-override", manualOverride);
+  }, [manualOverride]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -68,20 +80,19 @@ export function ThemeProvider({
     } else {
       root.classList.remove("dark");
     }
+  }, [theme]);
 
-    if (switchable) {
-      localStorage.setItem("theme", theme);
-    }
-  }, [theme, switchable]);
-
-  const toggleTheme = switchable
-    ? () => {
-        setTheme(prev => (prev === "light" ? "dark" : "light"));
-      }
-    : undefined;
+  // Cycle: auto → dark → light → auto
+  const toggleTheme = useCallback(() => {
+    setManualOverride((prev) => {
+      if (prev === "auto") return "dark";
+      if (prev === "dark") return "light";
+      return "auto"; // light → auto
+    });
+  }, []);
 
   return (
-    <ThemeContext.Provider value={{ theme, toggleTheme, switchable, isAutoMode: autoByTime }}>
+    <ThemeContext.Provider value={{ theme, toggleTheme, isAutoMode: manualOverride === "auto", manualOverride }}>
       {children}
     </ThemeContext.Provider>
   );
