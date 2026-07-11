@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, MapPin, Calendar, Navigation, Palette, ChevronLeft, ChevronRight, RotateCcw, Instagram, ExternalLink, Camera } from "lucide-react";
+import { X, MapPin, Calendar, Navigation, Palette, ChevronLeft, ChevronRight, RotateCcw, Instagram, ExternalLink } from "lucide-react";
 import { type Spot, artists, categoryColors, categoryLabels, spots } from "@/data/spots";
 import type { Artist } from "@/data/spots";
 
@@ -116,22 +116,6 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
 
             {/* Content */}
             <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
-              {/* Photo gallery slot */}
-              {spot.photos && spot.photos.length > 0 && (
-                <div className="relative rounded-xl overflow-hidden aspect-[16/9] bg-muted">
-                  <img
-                    src={spot.photos[0]}
-                    alt={spot.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono px-2 py-1 rounded-md">
-                    <Camera className="w-3 h-3" />
-                    <span>Photo d'illustration</span>
-                  </div>
-                </div>
-              )}
-
               {/* Meta info */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -382,8 +366,8 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
         <div
           className="relative animate-in slide-in-from-bottom duration-300"
           style={{
-            height: "calc(72 * var(--vh, 1vh))",
-            maxHeight: "72vh",
+            height: "calc(82 * var(--vh, 1vh))",
+            maxHeight: "82vh",
             borderTopLeftRadius: "16px",
             borderTopRightRadius: "16px",
             overflow: "hidden",
