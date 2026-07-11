@@ -100,9 +100,9 @@ export const spots: Spot[] = [
     year: "2025",
     description: "Portrait hyperréaliste monumental d'une femme réunionnaise tenant une tasse fumante « Bonjour Réunion Island ». Les détails sont bluffants — rides, mains, reflets dans la tasse. Réalisée en 4 jours lors du Festival Réunion Graffiti (7e édition, octobre 2025).",
     category: "fresque",
-    walkTime: "Départ",
-    photos: ["https://images.unsplash.com/photo-1579783928621-7a13d66a62d1?w=600&q=80"],
-  },
+   walkTime: "Départ",
+    photos: ["/manus-storage/tatie-monique_2df65aaf.jpeg"],
+ },
   {
     id: 2,
     name: "Le Petit Marché",
@@ -114,7 +114,7 @@ export const spots: Spot[] = [
     description: "Le Petit Marché est un lieu vivant et coloré, parfait pour une pause sensorielle entre deux fresques. Étals d'épices, de vanille, de fruits exotiques. Les rues voisines recèlent des interventions murales spontanées — tags créoles, pochoirs, petites fresques.",
     category: "patrimoine",
     walkTime: "3 min",
-    photos: ["https://images.unsplash.com/photo-1555529669-e69e7aa0ba9a?w=600&q=80"],
+    photos: [],
   },
   {
     id: 3,
@@ -127,7 +127,7 @@ export const spots: Spot[] = [
     description: "Probablement la plus belle rue de Saint-Denis. Les anciennes maisons créoles avec leurs varangues et leurs lambrequins en bois côtoient des fresques et des collages qui dialoguent avec l'architecture. Un des meilleurs spots photo du parcours.",
     category: "patrimoine",
     walkTime: "3 min",
-    photos: ["https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80"],
+    photos: [],
   },
   {
     id: 4,
@@ -140,7 +140,7 @@ export const spots: Spot[] = [
     description: "La rue de Paris est l'artère historique de Saint-Denis. En la parcourant, les Gouzous de Jace apparaissent sur des murs, des poteaux, des volets. Ils se cachent parfois en hauteur ou dans des recoins inattendus. Ne manquez pas la Villa de la Région.",
     category: "fresque",
     walkTime: "5 min",
-    photos: ["https://images.unsplash.com/photo-1572947650440-e8a97ef053b2?w=600&q=80"],
+    photos: [],
   },
   {
     id: 5,
@@ -153,7 +153,7 @@ export const spots: Spot[] = [
     description: "La façade de l'Hôtel Dina Morgabine arbore une fresque monumentale du duo réunionnais Kid Kreol & Boogie. L'oeuvre mêle végétal et street art dans leur style caractéristique inspiré de l'imaginaire et des croyances de l'océan Indien.",
     category: "kidkreol",
     walkTime: "5 min",
-    photos: ["https://images.unsplash.com/photo-1558618666-fcd25c85f82e?w=600&q=80"],
+    photos: [],
   },
   {
     id: 6,
@@ -166,7 +166,7 @@ export const spots: Spot[] = [
     description: "« Koz Lan Gaz » (expression créole : bavarder) est une collaboration franco-allemande réalisée lors du Festival Réunion Graffiti 2021. Lettrage monumental de Stohead et Nilko, personnages colorés de Lazoo. Face à l'océan, au coucher du soleil.",
     category: "fresque",
     walkTime: "2 min",
-    photos: ["https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&q=80"],
+    photos: [],
   },
   {
     id: 7,
@@ -179,7 +179,7 @@ export const spots: Spot[] = [
     description: "Le quartier historique du Bas de la Rivière abrite la fresque « Cosmique » (2013) de Kid Kreol & Boogie, ainsi que la collaboration monumentale avec Seth Globepainter (2012). Des oeuvres oniriques parfaitement intégrées à l'environnement du quartier.",
     category: "kidkreol",
     walkTime: "10 min",
-    photos: ["https://images.unsplash.com/photo-1551913902-c92207136625?w=600&q=80"],
+    photos: [],
   },
   {
     id: 8,
@@ -192,7 +192,7 @@ export const spots: Spot[] = [
     description: "La Cité des Arts abrite les fresques les plus monumentales de Kid Kreol & Boogie à La Réunion. Plusieurs murs extérieurs sont recouverts d'oeuvres immenses inspirées des paysages, des légendes et de l'imaginaire réunionnais. Un univers cosmogonique à ciel ouvert, à voir absolument.",
     category: "kidkreol",
     walkTime: "5 min en voiture",
-    photos: ["https://images.unsplash.com/photo-1578301978018-3005759f48f7?w=600&q=80"],
+    photos: [],
   },
 ];
 

@@ -129,25 +129,36 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
             </div>
 
             {/* Content */}
-            <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
-              {/* Meta info */}
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4 shrink-0" />
-                  <span>{spot.address}</span>
+           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+              {/* Spot photo */}
+              {spot.photos && spot.photos.length > 0 && (
+                <div className="w-full rounded-xl overflow-hidden">
+                  <img
+                    src={spot.photos[0]}
+                    alt={spot.name}
+                    className={`w-full object-cover ${isMobile ? "h-36" : "h-44"}`}
+                  />
                 </div>
-                {spot.year && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4 shrink-0" />
-                    <span>{spot.year}</span>
-                  </div>
-                )}
-                {spot.walkTime && (
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Navigation className="w-4 h-4 shrink-0" />
-                    <span>{spot.walkTime} depuis l'étape précédente</span>
-                  </div>
-                )}
+              )}
+
+             {/* Meta info */}
+             <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm text-[#1A1A1A]">
+                 <MapPin className="w-4 h-4 shrink-0" />
+                 <span>{spot.address}</span>
+               </div>
+               {spot.year && (
+                  <div className="flex items-center gap-2 text-sm text-[#1A1A1A]">
+                   <Calendar className="w-4 h-4 shrink-0" />
+                   <span>{spot.year}</span>
+                 </div>
+               )}
+               {spot.walkTime && (
+                  <div className="flex items-center gap-2 text-sm text-[#1A1A1A]">
+                   <Navigation className="w-4 h-4 shrink-0" />
+                   <span>{spot.walkTime} depuis l'étape précédente</span>
+                 </div>
+               )}
               </div>
 
               {/* Action buttons row */}
@@ -176,17 +187,17 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
               </div>
 
               {/* Description */}
-              <p className={`leading-relaxed text-foreground/90 ${isMobile ? "text-[13px]" : "text-sm"}`}>
-                {spot.description}
-              </p>
+              <p className={`leading-relaxed text-[#1A1A1A] ${isMobile ? "text-[13px]" : "text-sm"}`}>
+               {spot.description}
+             </p>
 
               {/* Artists - tap to flip */}
-              {spotArtists.length > 0 && (
-                <div className="space-y-2.5">
-                  <h3 className="text-xs font-mono uppercase tracking-wider text-muted-foreground flex items-center gap-2">
-                    <Palette className="w-3.5 h-3.5" />
-                    {spotArtists.length > 1 ? "Artistes" : "Artiste"} — toucher pour retourner
-                  </h3>
+             {spotArtists.length > 0 && (
+               <div className="space-y-2.5">
+                  <h3 className="text-xs font-mono uppercase tracking-wider text-[#333] flex items-center gap-2">
+                   <Palette className="w-3.5 h-3.5" />
+                   {spotArtists.length > 1 ? "Artistes" : "Artiste"} — toucher pour retourner
+                 </h3>
                   <div className="space-y-2">
                     {spotArtists.map((artist) => (
                       <button
@@ -203,8 +214,8 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                             </div>
                             <div>
                               <span className="font-medium text-foreground text-sm">{artist.name}</span>
-                              <p className="text-xs text-muted-foreground mt-0.5">{artist.origin}</p>
-                            </div>
+                              <p className="text-xs text-[#333] mt-0.5">{artist.origin}</p>
+                           </div>
                           </div>
                           <RotateCcw className="w-3.5 h-3.5 text-[#FF3E52]" />
                         </div>
