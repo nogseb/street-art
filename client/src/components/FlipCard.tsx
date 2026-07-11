@@ -28,6 +28,13 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
   }, [spot.id]);
 
   const color = categoryColors[spot.category];
+  // Lighter version of category color for dark mode readability
+  const lightColorMap: Record<string, string> = {
+    "#FF3E52": "#FF6B7A",
+    "#2D6A4F": "#5CB88A",
+    "#1A237E": "#7986CB",
+  };
+  const lightColor = lightColorMap[color] || color;
   const spotIndex = spots.findIndex((s) => s.id === spot.id);
   const spotArtists = spot.artistIds.map((id) => artists[id]).filter(Boolean);
   const currentArtist: Artist | null = selectedArtistId
@@ -118,7 +125,7 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                   <h2 className={`text-[#1A1A1A] dark:text-white leading-tight ${isMobile ? "text-lg" : "text-xl"}`} style={{ fontFamily: "'DM Serif Display', serif" }}>
                     {spot.name}
                   </h2>
-                  <span className="text-[10px] font-mono uppercase tracking-[0.15em]" style={{ color }}>
+                  <span className="text-[10px] font-mono uppercase tracking-[0.15em] category-label" style={{ "--cat-color": color, "--cat-color-light": lightColor } as React.CSSProperties}>
                     {categoryLabels[spot.category]}
                   </span>
                 </div>
@@ -129,7 +136,7 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
             </div>
 
             {/* Content */}
-           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+           <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 pb-6 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
               {/* Spot photo */}
               {spot.photos && spot.photos.length > 0 && (
                 <div className="w-full rounded-xl overflow-hidden">
@@ -509,8 +516,8 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
         <div
           className="relative animate-in slide-in-from-bottom duration-300"
           style={{
-            height: "calc(82 * var(--vh, 1vh))",
-            maxHeight: "82vh",
+            height: "calc(88 * var(--vh, 1vh))",
+            maxHeight: "88vh",
             borderTopLeftRadius: "16px",
             borderTopRightRadius: "16px",
             overflow: "hidden",

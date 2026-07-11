@@ -236,3 +236,11 @@
 .dark .leaflet-control-attribution a {
   color: #aaa !important;
 }
+
+/* Category label: use light variant in dark mode */
+.category-label {
+  color: var(--cat-color);
+}
+.dark .category-label {
+  color: var(--cat-color-light) !important;
+}
