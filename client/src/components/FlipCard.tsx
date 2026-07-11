@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, MapPin, Calendar, Navigation, Palette, ChevronLeft, ChevronRight, RotateCcw, Instagram } from "lucide-react";
+import { X, MapPin, Calendar, Navigation, Palette, ChevronLeft, ChevronRight, RotateCcw, Instagram, ExternalLink, Camera } from "lucide-react";
 import { type Spot, artists, categoryColors, categoryLabels, spots } from "@/data/spots";
 import type { Artist } from "@/data/spots";
 
@@ -26,6 +26,9 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
   const currentArtist: Artist | null = selectedArtistId
     ? artists[selectedArtistId] || null
     : spotArtists[0] || null;
+
+  // Google Maps navigation URL
+  const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&destination=${spot.lat},${spot.lon}&travelmode=walking`;
 
   const navigateToSpot = (direction: "prev" | "next") => {
     const idx = direction === "next" ? spotIndex + 1 : spotIndex - 1;
@@ -112,7 +115,23 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
             </div>
 
             {/* Content */}
-            <div className={`flex-1 overflow-y-auto overscroll-contain space-y-4 ${isMobile ? "px-4 py-4" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+            <div className={`flex-1 overflow-y-auto overscroll-contain ${isMobile ? "px-4 py-4 space-y-3" : "px-6 py-5 space-y-5"}`} style={{ WebkitOverflowScrolling: "touch" }}>
+              {/* Photo gallery slot */}
+              {spot.photos && spot.photos.length > 0 && (
+                <div className="relative rounded-xl overflow-hidden aspect-[16/9] bg-muted">
+                  <img
+                    src={spot.photos[0]}
+                    alt={spot.name}
+                    className="w-full h-full object-cover"
+                    loading="lazy"
+                  />
+                  <div className="absolute bottom-2 right-2 flex items-center gap-1 bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono px-2 py-1 rounded-md">
+                    <Camera className="w-3 h-3" />
+                    <span>Photo d'illustration</span>
+                  </div>
+                </div>
+              )}
+
               {/* Meta info */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -132,6 +151,17 @@ export default function FlipCard({ spot, onClose, isMobile = false }: FlipCardPr
                   </div>
                 )}
               </div>
+
+              {/* Y aller button - Google Maps */}
+              <a
+                href={googleMapsUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`flex items-center justify-center gap-2 rounded-xl bg-[#FF3E52] text-white font-medium active:scale-[0.97] transition-transform ${isMobile ? "py-3 text-sm" : "py-2.5 text-sm hover:bg-[#E63546]"}`}
+              >
+                <ExternalLink className="w-4 h-4" />
+                Y aller (Google Maps)
+              </a>
 
               {/* Description */}
               <p className={`leading-relaxed text-foreground/90 ${isMobile ? "text-[13px]" : "text-sm"}`}>

@@ -3,7 +3,7 @@ import { MapPin, Route, Users, ChevronRight, List, Map as MapIcon } from "lucide
 import StreetArtMap from "@/components/StreetArtMap";
 import FlipCard from "@/components/FlipCard";
 import SpotList from "@/components/SpotList";
-import { type Spot, spots } from "@/data/spots";
+import { type Spot, spots, artists } from "@/data/spots";
 import { useIsMobile } from "@/hooks/useMobile";
 
 export default function Home() {
@@ -62,7 +62,7 @@ export default function Home() {
       <header className="shrink-0 bg-[#F8F6F3]/95 backdrop-blur-md border-b border-[#E8E4DF] px-3 md:px-6 py-2.5 md:py-3 flex items-center justify-between z-50 safe-area-top">
         <div className="flex items-center gap-2">
           {/* ST.ART brand lockup */}
-          <div className="flex items-baseline gap-0 select-none">
+         <div className="flex items-baseline gap-0 select-none">
             <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
               ST
             </span>
@@ -72,10 +72,13 @@ export default function Home() {
             <span className="text-xl md:text-[28px] font-bold tracking-[-0.03em] text-[#1A1A1A]" style={{ fontFamily: "'DM Serif Display', serif" }}>
               ART
             </span>
+            <span className="text-sm md:text-base font-medium tracking-[-0.01em] text-[#8A8A8A] ml-2" style={{ fontFamily: "'DM Serif Display', serif" }}>
+              Saint-Denis
+            </span>
           </div>
-          <div className="hidden sm:block ml-3 pl-3 border-l border-[#E8E4DF]">
+          <div className="hidden md:block ml-3 pl-3 border-l border-[#E8E4DF]">
             <p className="text-[10px] font-mono uppercase tracking-[0.15em] text-[#8A8A8A]">
-              Saint-Denis · La Réunion
+              La Réunion
             </p>
           </div>
         </div>
@@ -89,11 +92,11 @@ export default function Home() {
             </span>
             <span className="flex items-center gap-1.5">
               <Route className="w-3 h-3" />
-              ~2 km
+              ~2,5 km
             </span>
             <span className="flex items-center gap-1.5">
               <Users className="w-3 h-3" />
-              7 artistes
+              {Object.keys(artists).length} artistes
             </span>
           </div>
 
@@ -159,15 +162,15 @@ export default function Home() {
                   <div className="flex items-center gap-3 mb-3">
                     <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
                       <MapPin className="w-3 h-3 text-[#FF3E52]" />
-                      7 étapes
+                      {spots.length} étapes
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
                       <Route className="w-3 h-3 text-[#FF3E52]" />
-                      ~2 km
+                      ~2,5 km
                     </div>
                     <div className="flex items-center gap-2 text-[10px] font-mono uppercase tracking-wider text-[#8A8A8A]">
                       <Users className="w-3 h-3 text-[#FF3E52]" />
-                      7 artistes
+                      {Object.keys(artists).length} artistes
                     </div>
                   </div>
                   <h2 className="text-lg leading-tight text-[#1A1A1A] mb-2" style={{ fontFamily: "'DM Serif Display', serif" }}>

@@ -23,8 +23,8 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
     const borderWidth = isMobile ? 3 : 2.5;
 
     const map = L.map(containerRef.current, {
-      center: [-20.8790, 55.4475],
-      zoom: isMobile ? 15 : 16,
+      center: [-20.8830, 55.4490],
+      zoom: isMobile ? 14 : 15,
       zoomControl: false,
       attributionControl: false,
     });
@@ -39,13 +39,27 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
     L.control.attribution({ position: "bottomleft" }).addTo(map);
 
     // Draw route line
-    const routeCoords: L.LatLngExpression[] = spots.map((s) => [s.lat, s.lon]);
-    L.polyline(routeCoords, {
+    // Draw walking route (spots 1-7) as dashed line
+    const walkingSpots = spots.filter(s => s.id <= 7);
+    const walkingCoords: L.LatLngExpression[] = walkingSpots.map((s) => [s.lat, s.lon]);
+    L.polyline(walkingCoords, {
       color: "#FF3E52",
       weight: isMobile ? 3 : 2.5,
       opacity: 0.6,
       dashArray: "8 6",
     }).addTo(map);
+
+    // Draw car route to spot 8 (dotted, different style)
+    const spot7 = spots.find(s => s.id === 7);
+    const spot8 = spots.find(s => s.id === 8);
+    if (spot7 && spot8) {
+      L.polyline([[spot7.lat, spot7.lon], [spot8.lat, spot8.lon]], {
+        color: "#1A237E",
+        weight: isMobile ? 2.5 : 2,
+        opacity: 0.5,
+        dashArray: "4 8",
+      }).addTo(map);
+    }
 
     // Add clickable markers
     spots.forEach((spot) => {
