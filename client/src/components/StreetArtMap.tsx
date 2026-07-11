@@ -2,20 +2,26 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { spots, categoryColors, type Spot } from "@/data/spots";
+import type { CustomSpot } from "@/hooks/useCustomSpots";
 
 interface StreetArtMapProps {
   selectedSpot: Spot | null;
   onSelectSpot: (spot: Spot) => void;
+  customSpots?: CustomSpot[];
+  onSelectCustomSpot?: (spot: CustomSpot) => void;
 }
 
-export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMapProps) {
+export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots = [], onSelectCustomSpot }: StreetArtMapProps) {
   const mapRef = useRef<L.Map | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const onSelectRef = useRef(onSelectSpot);
+  const onSelectCustomRef = useRef(onSelectCustomSpot);
   const userMarkerRef = useRef<L.CircleMarker | null>(null);
   const userAccuracyRef = useRef<L.Circle | null>(null);
+  const customMarkersRef = useRef<L.Marker[]>([]);
   const [locating, setLocating] = useState(false);
   onSelectRef.current = onSelectSpot;
+  onSelectCustomRef.current = onSelectCustomSpot;
 
   useEffect(() => {
     if (!containerRef.current || mapRef.current) return;
@@ -97,6 +103,33 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot }: StreetArtMa
       mapRef.current = null;
     };
   }, []);
+
+  // Render custom spots as markers
+  useEffect(() => {
+    if (!mapRef.current) return;
+    const map = mapRef.current;
+    const isMobile = window.innerWidth < 768;
+    const size = isMobile ? 40 : 34;
+
+    // Remove old custom markers
+    customMarkersRef.current.forEach((m) => map.removeLayer(m));
+    customMarkersRef.current = [];
+
+    customSpots.forEach((cs) => {
+      const icon = L.divIcon({
+        html: `<div style="width:${size}px;height:${size}px;border-radius:8px;border:3px solid #FF3E52;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.4);cursor:pointer;-webkit-tap-highlight-color:transparent;"><img src="${cs.photoDataUrl}" style="width:100%;height:100%;object-fit:cover;" /></div>`,
+        className: "custom-photo-marker",
+        iconSize: [size, size],
+        iconAnchor: [size / 2, size / 2],
+      });
+
+      const marker = L.marker([cs.lat, cs.lon], { icon }).addTo(map);
+      marker.on("click", () => {
+        onSelectCustomRef.current?.(cs);
+      });
+      customMarkersRef.current.push(marker);
+    });
+  }, [customSpots]);
 
   // Geolocation handler
   const handleGeolocate = () => {

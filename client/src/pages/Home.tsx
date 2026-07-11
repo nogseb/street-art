@@ -3,14 +3,19 @@ import { MapPin, Route, Users, ChevronRight, List, Map as MapIcon } from "lucide
 import StreetArtMap from "@/components/StreetArtMap";
 import FlipCard from "@/components/FlipCard";
 import SpotList from "@/components/SpotList";
+import AddCustomSpotButton from "@/components/AddCustomSpotButton";
+import CustomSpotPopup from "@/components/CustomSpotPopup";
 import { type Spot, spots, artists } from "@/data/spots";
 import { useIsMobile } from "@/hooks/useMobile";
+import { useCustomSpots, type CustomSpot, type GpsResult } from "@/hooks/useCustomSpots";
 
 export default function Home() {
   const [selectedSpot, setSelectedSpot] = useState<Spot | null>(null);
   const [showList, setShowList] = useState(false);
   const [showIntro, setShowIntro] = useState(true);
+  const [selectedCustomSpot, setSelectedCustomSpot] = useState<CustomSpot | null>(null);
   const isMobile = useIsMobile();
+  const { spots: customSpots, add: addCustomSpot, remove: removeCustomSpot } = useCustomSpots();
 
   // iOS viewport height fix: set --vh CSS variable
   useEffect(() => {
@@ -37,6 +42,22 @@ export default function Home() {
     setSelectedSpot(null);
     setShowIntro(true);
   }, []);
+
+  const handleSelectCustomSpot = useCallback((cs: CustomSpot) => {
+    setSelectedCustomSpot(cs);
+  }, []);
+
+  const handleCloseCustomSpot = useCallback(() => {
+    setSelectedCustomSpot(null);
+  }, []);
+
+  const handleAddCustomSpot = useCallback(async (file: File, gps: GpsResult, label?: string) => {
+    await addCustomSpot(file, gps, label);
+  }, [addCustomSpot]);
+
+  const handleDeleteCustomSpot = useCallback((id: string) => {
+    removeCustomSpot(id);
+  }, [removeCustomSpot]);
 
   // Auto-dismiss intro after 8s on mobile, 12s on desktop
   useEffect(() => {
@@ -124,7 +145,12 @@ export default function Home() {
           <StreetArtMap
             selectedSpot={selectedSpot}
             onSelectSpot={handleSelectSpot}
+            customSpots={customSpots}
+            onSelectCustomSpot={handleSelectCustomSpot}
           />
+
+          {/* Add custom spot button */}
+          <AddCustomSpotButton onAdd={handleAddCustomSpot} />
 
           {/* Editorial intro panel (desktop only) */}
           {!selectedSpot && !showList && showIntro && (
@@ -226,6 +252,15 @@ export default function Home() {
           <div className="absolute inset-0 bg-[#F8F6F3] z-30 overflow-y-auto animate-in fade-in duration-200 overscroll-contain">
             <SpotList onSelectSpot={handleSelectSpot} />
           </div>
+        )}
+
+        {/* Custom spot popup */}
+        {selectedCustomSpot && (
+          <CustomSpotPopup
+            spot={selectedCustomSpot}
+            onClose={handleCloseCustomSpot}
+            onDelete={handleDeleteCustomSpot}
+          />
         )}
       </main>
     </div>
