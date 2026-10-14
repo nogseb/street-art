@@ -101,7 +101,7 @@ export const spots: Spot[] = [
     description: "Portrait hyperréaliste monumental d'une femme réunionnaise tenant une tasse fumante « Bonjour Réunion Island ». Les détails sont bluffants — rides, mains, reflets dans la tasse. Réalisée en 4 jours lors du Festival Réunion Graffiti (7e édition, octobre 2025).",
     category: "fresque",
    walkTime: "Départ",
-    photos: ["/manus-storage/tatie-monique_2df65aaf.jpeg"],
+    photos: [`${import.meta.env.BASE_URL}images/tatie-monique.webp`],
  },
   {
     id: 2,

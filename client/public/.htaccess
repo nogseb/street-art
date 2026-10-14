@@ -1,0 +1,5 @@
+RewriteEngine On
+RewriteBase /street-art/
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /street-art/index.html [L]
