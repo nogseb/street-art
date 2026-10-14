@@ -3,6 +3,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { spots, categoryColors, type Spot } from "@/data/spots";
 import type { CustomSpot } from "@/hooks/useCustomSpots";
+import { createBasemapLayer } from "@/lib/basemap";
 
 interface StreetArtMapProps {
   selectedSpot: Spot | null;
@@ -19,6 +20,8 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
   const userMarkerRef = useRef<L.CircleMarker | null>(null);
   const userAccuracyRef = useRef<L.Circle | null>(null);
   const customMarkersRef = useRef<L.Marker[]>([]);
+  const basemapRef = useRef<L.TileLayer | null>(null);
+  const [basemapUnavailable, setBasemapUnavailable] = useState(false);
   const [locating, setLocating] = useState(false);
   onSelectRef.current = onSelectSpot;
   onSelectCustomRef.current = onSelectCustomSpot;
@@ -38,11 +41,7 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
       attributionControl: false,
     });
 
-    L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/">CARTO</a>',
-      subdomains: "abcd",
-      maxZoom: 19,
-    }).addTo(map);
+    basemapRef.current = createBasemapLayer(setBasemapUnavailable).addTo(map);
 
     L.control.zoom({ position: "bottomright" }).addTo(map);
     L.control.attribution({ position: "bottomleft" }).addTo(map);
@@ -101,6 +100,7 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
     return () => {
       map.remove();
       mapRef.current = null;
+      basemapRef.current = null;
     };
   }, []);
 
@@ -219,6 +219,21 @@ export default function StreetArtMap({ selectedSpot, onSelectSpot, customSpots =
   return (
     <div className="relative w-full h-full">
       <div ref={containerRef} className="w-full h-full touch-manipulation" />
+      {basemapUnavailable && (
+        <div
+          role="status"
+          className="absolute top-20 left-3 right-3 md:left-auto md:w-80 z-[1000] rounded-xl bg-white dark:bg-[#2A2A2A] text-[#1A1A1A] dark:text-white shadow-lg border border-gray-200 dark:border-[#444] p-3 text-sm"
+        >
+          <p>Fond de carte indisponible. Vérifiez votre connexion.</p>
+          <button
+            type="button"
+            onClick={() => basemapRef.current?.redraw()}
+            className="mt-2 font-semibold underline underline-offset-2 rounded focus-visible:outline-2 focus-visible:outline-offset-2"
+          >
+            Réessayer
+          </button>
+        </div>
+      )}
       {/* Geolocation button */}
       <button
         onClick={handleGeolocate}
